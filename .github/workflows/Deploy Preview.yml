@@ -30,24 +30,11 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          npx vercel --prod --token $VERCEL_TOKEN --org-id $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID --confirm
+          DEPLOY_URL=$(npx vercel --prod --token $VERCEL_TOKEN --org-id $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID --confirm | tail -n 1)
+          echo "Vercel Deployment URL: $DEPLOY_URL"
+          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
         id: vercel-deploy
 
-      - name: Get Vercel Deployment URL
-        run: echo "Vercel Deployment URL: $(npx vercel --token $VERCEL_TOKEN ls --scope $VERCEL_ORG_ID | grep -o 'https://[^ ]*')" > vercel_url.txt
-        id: get-url
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      
-      - name: Save Deployment URL as GitHub output
-        id: save-url
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const url = fs.readFileSync('vercel_url.txt', 'utf8').trim();
-            core.setOutput('vercel-url', url);
-      
       - name: Comment on Pull Request
         uses: actions/github-script@v6
         with:
@@ -56,7 +43,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Deployed to Vercel: ${url}`
+              body: `Deployed to Vercel: ${process.env.DEPLOY_URL}`
             })
         env:
-          url: ${{ steps.save-url.outputs.vercel-url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
