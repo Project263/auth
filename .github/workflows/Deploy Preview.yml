@@ -37,13 +37,15 @@ jobs:
 
       - name: Comment on Pull Request
         uses: actions/github-script@v6
-        with:
-          script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `Deployed to Vercel: ${process.env.DEPLOY_URL}`
-            })
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const { DEPLOY_URL } = process.env;
+            const issue_number = context.payload.pull_request.number;
+            github.rest.issues.createComment({
+              issue_number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Deployed to Vercel: ${DEPLOY_URL}`
+            });
