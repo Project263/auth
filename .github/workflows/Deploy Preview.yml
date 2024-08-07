@@ -14,9 +14,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '16' # Убедитесь, что версия Node.js соответствует требованиям вашего проекта
+          node-version: '18.17.0' 
 
       - name: Install dependencies
         run: npm install
@@ -31,4 +31,4 @@ jobs:
           vercel-args: '--prod'
           working-directory: ./
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          scope: your-vercel-username # Укажите ваше имя пользователя Vercel
+          scope: ruslanlukoanov0-gmailcom
