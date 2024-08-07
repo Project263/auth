@@ -31,4 +31,4 @@ jobs:
           vercel-args: '--prod'
           working-directory: ./
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          scope: ruslanlukoanov0gmailcom's projects
+          scope: ruslanlukoanov0gmailcoms-projects
