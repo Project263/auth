@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .ts,.tsx,.jsx",
+    "lint": "eslint . --ext .ts,.tsx,.jsx --max-warnings=0",
     "prepare": "husky",
     "commitlint": "commitlint --edit"
   },

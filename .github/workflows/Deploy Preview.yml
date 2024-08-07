@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.17.0' 
+          node-version: '18.17.0'
 
       - name: Install dependencies
         run: npm install
@@ -25,10 +25,27 @@ jobs:
         run: npm run build
 
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v20
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          DEPLOY_URL=$(npx vercel --prod --token $VERCEL_TOKEN --confirm | tail -n 1)
+          echo "Vercel Deployment URL: $DEPLOY_URL"
+          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
+        id: vercel-deploy
+
+      - name: Comment on Pull Request
+        uses: actions/github-script@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-args: '--prod'
-          working-directory: ./
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          scope: ruslanlukoanov0-gmailcom
+          script: |
+            const { DEPLOY_URL } = process.env;
+            const issue_number = context.payload.pull_request.number;
+            await github.rest.issues.createComment({
+              issue_number: issue_number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Deployed to Vercel: ${DEPLOY_URL}`
+            });
