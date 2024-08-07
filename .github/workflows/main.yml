@@ -23,10 +23,13 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'  # укажи нужную версию Node.js
+        node-version: '18' 
 
     - name: Install dependencies
-      run: yarn install  # или npm install, если используешь npm
-
+      run: yarn install 
     - name: Run ESLint
-      run: yarn lint  # или npx eslint . если используешь npx для запуска eslint
+      run: yarn lint 
+    - name: Run Prettier
+      run: yarn prettier --check '**/*.{js,ts,tsx,jsx}'
+
+
