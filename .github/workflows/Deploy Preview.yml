@@ -24,13 +24,13 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Deploy to Vercel
+      -  name: Deploy to Vercel
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          DEPLOY_URL=$(npx vercel --prod --token $VERCEL_TOKEN --org-id $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID --confirm | tail -n 1)
+          DEPLOY_URL=$(npx vercel --prod --token $VERCEL_TOKEN --confirm | tail -n 1)
           echo "Vercel Deployment URL: $DEPLOY_URL"
           echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
         id: vercel-deploy
