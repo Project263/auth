@@ -24,7 +24,7 @@ jobs:
       - name: Build application
         run: npm run build
 
-      -  name: Deploy to Vercel
+      - name: Deploy to Vercel
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -43,8 +43,8 @@ jobs:
           script: |
             const { DEPLOY_URL } = process.env;
             const issue_number = context.payload.pull_request.number;
-            github.rest.issues.createComment({
-              issue_number,
+            await github.rest.issues.createComment({
+              issue_number: issue_number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `Deployed to Vercel: ${DEPLOY_URL}`
