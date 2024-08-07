@@ -1,3 +1,66 @@
 {
-  "extends": "next/core-web-vitals"
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:import/recommended",
+    "airbnb-typescript",
+    "prettier",
+    "next/core-web-vitals"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "overrides": [],
+  "rules": {
+    "no-console": "warn",
+    "quotes": ["warn", "single"],
+    "jsx-quotes": ["warn", "prefer-double"],
+    "prefer-const": "warn",
+    "indent": ["warn", 2],
+    "max-len": ["warn", {"code": 120}],
+    "comma-dangle": ["warn", "always-multiline"],
+    "semi": ["warn", "always"],
+    "react-hooks/rules-of-hooks": "off", 
+    "react/no-unescaped-entities": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "@next/next/inline-script-id": "off",
+    "@next/next/no-before-interactive-script-outside-document": "off",
+    "@next/next/no-img-element": "off",
+    "no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
+    "import/no-extraneous-dependencies": [
+    "error", {
+       "devDependencies": false, 
+       "optionalDependencies": false, 
+       "peerDependencies": false, 
+       "packageDir": "./"
+    }
+    
+]
+    // "import/order": ["error", {
+    //   "groups": ["builtin", "external", "internal",
+    // "parent", "sibling", "index", "object", "type"],
+    // "newlines-between": "always-and-inside-groups"
+    // }]
+  },
+  "plugins": [
+    "react",
+    "react-hooks",
+    "@typescript-eslint",
+    "prettier",
+    "import"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
 }
