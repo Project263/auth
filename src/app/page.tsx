@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import Image from 'next/image';
 import styles from './page.module.css';
 
