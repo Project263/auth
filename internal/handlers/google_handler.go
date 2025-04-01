@@ -6,6 +6,7 @@ import (
 	"auth/internal/services"
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -24,7 +25,7 @@ func NewGoogleHandler(service *services.GoogleService, cfg *config.Config) *Goog
 	var googleOauthConfig = &oauth2.Config{
 		ClientID:     cfg.GOOGLE_CLIENT_ID,
 		ClientSecret: cfg.GOOGLE_SECRET,
-		RedirectURL:  "http://localhost:8080/auth/google/callback",
+		RedirectURL:  fmt.Sprintf("%s/auth/google/callback", cfg.SSO_URL),
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"},
 		Endpoint:     google.Endpoint,
 	}
@@ -80,5 +81,5 @@ func (h *GoogleHandler) HandleGoogleCallback(e echo.Context) error {
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	return e.Redirect(http.StatusFound, "http://localhost:3000/")
+	return e.Redirect(http.StatusFound, h.cfg.FRONT_URL)
 }

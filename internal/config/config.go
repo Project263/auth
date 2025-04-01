@@ -10,6 +10,8 @@ type Config struct {
 	SECRET           string `env:"SECRET" envDefault:"your_secret_key"`
 	GOOGLE_SECRET    string `env:"GOOGLE_SECRET" envDefault:"xxxxx-xxxxxx-xxxx"`
 	GOOGLE_CLIENT_ID string `env:"GOOGLE_CLIENT_ID" envDefault:"xxxxx.apps.googleusercontent.com"`
+	FRONT_URL        string `env:"FRONT_URL" envDefault:"https://theaesthetics.ru"`
+	SSO_URL          string `env:"SSO_URL" envDefault:"https://sso.theaesthetics.ru"`
 }
 
 func NewConfig() (*Config, error) {
