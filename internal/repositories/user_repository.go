@@ -17,6 +17,34 @@ func NewUserRepository(db *pgxpool.Pool) *UserRepository {
 	return &UserRepository{db: db}
 }
 
+func (r *UserRepository) CreateUser(ctx context.Context, email, name, password string) error {
+	tx, err := r.db.Begin(ctx)
+	if err != nil {
+		logrus.Error(err)
+		return err
+	}
+	query, args, err := squirrel.Select("id").
+		From("users").
+		Where(squirrel.Eq{"email": email}).
+		PlaceholderFormat(squirrel.Dollar).
+		ToSql()
+	if err != nil {
+		logrus.Error(err)
+		return err
+	}
+
+	row := tx.QueryRow(ctx, query, args...)
+	var id string
+	if err := row.Scan(&id); err != nil {
+		logrus.Error(err)
+		return err
+	}
+
+	logrus.Info(id)
+
+	return nil
+}
+
 func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (models.User, error) {
 	query, args, err := squirrel.Select("id", "username", "password", "email", "role").
 		From("users").

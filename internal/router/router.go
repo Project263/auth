@@ -18,4 +18,11 @@ func InitRouter(e *echo.Echo, db *pgxpool.Pool, cfg *config.Config) {
 
 	e.Use(middleware.Logger())
 	e.POST("/login", userHandler.Login)
+
+	googleRepo := repositories.NewGoogleRepository(db)
+	googleService := services.NewGoogleService(googleRepo)
+	googleHanler := handlers.NewGoogleHandler(googleService, cfg)
+
+	e.GET("/auth/google", googleHanler.HandleGoogleLogin)
+	e.GET("/auth/google/callback", googleHanler.HandleGoogleCallback)
 }
