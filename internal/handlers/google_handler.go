@@ -79,6 +79,7 @@ func (h *GoogleHandler) HandleGoogleCallback(e echo.Context) error {
 		HttpOnly: true,
 		Secure:   true,
 		SameSite: http.SameSiteLaxMode,
+		Domain:   "theaesthetics.ru",
 	})
 
 	return e.Redirect(http.StatusFound, h.cfg.FRONT_URL)
