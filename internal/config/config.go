@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/caarlos0/env"
+	"github.com/sirupsen/logrus"
 )
 
 type Config struct {
@@ -10,8 +11,10 @@ type Config struct {
 	SECRET           string `env:"SECRET" envDefault:"your_secret_key"`
 	GOOGLE_SECRET    string `env:"GOOGLE_SECRET" envDefault:"xxxxx-xxxxxx-xxxx"`
 	GOOGLE_CLIENT_ID string `env:"GOOGLE_CLIENT_ID" envDefault:"xxxxx.apps.googleusercontent.com"`
-	FRONT_URL        string `env:"FRONT_URL" envDefault:"https://theaesthetics.ru"`
-	SSO_URL          string `env:"SSO_URL" envDefault:"https://sso.theaesthetics.ru"`
+	DOMAIN           string `env:"DOMAIN" envDefault:"localhost"`
+	FRONT_URL        string `env:"FRONT_URL" envDefault:"http://localhost:8080"`
+	SSO_URL          string `env:"SSO_URL" envDefault:"http://localhost:8080"`
+	MODE             string `env:"MODE" envDefault:"dev"`
 }
 
 func NewConfig() (*Config, error) {
@@ -20,6 +23,8 @@ func NewConfig() (*Config, error) {
 	if err := env.Parse(&cfg); err != nil {
 		return nil, err
 	}
+
+	logrus.Println(cfg)
 
 	return &cfg, nil
 }

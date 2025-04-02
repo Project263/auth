@@ -2,9 +2,9 @@ package repositories
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/sirupsen/logrus"
 )
@@ -36,7 +36,7 @@ func (r *GoogleRepository) CreateUser(ctx context.Context, email, username, pass
 
 	row := tx.QueryRow(ctx, query, args...)
 	var userID string
-	if err := row.Scan(&userID); err == sql.ErrNoRows {
+	if err := row.Scan(&userID); err == pgx.ErrNoRows {
 		query, args, err = squirrel.Insert("users").
 			Columns("email", "username", "password", "role").
 			Values(email, username, "", "user").

@@ -7,10 +7,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
@@ -44,14 +44,14 @@ func (h *GoogleHandler) HandleGoogleCallback(e echo.Context) error {
 
 	token, err := h.gConfig.Exchange(context.Background(), code)
 	if err != nil {
-		log.Println("Ошибка при обмене кода:", err)
+		logrus.Error("Ошибка при обмене кода:", err)
 		return e.String(http.StatusInternalServerError, "Ошибка при авторизации")
 	}
 
 	client := h.gConfig.Client(context.Background(), token)
 	resp, err := client.Get("https://www.googleapis.com/oauth2/v2/userinfo")
 	if err != nil {
-		log.Println("Ошибка при получении данных пользователя:", err)
+		logrus.Error("Ошибка при получении данных пользователя:", err)
 		return e.String(http.StatusInternalServerError, "Ошибка при авторизации")
 	}
 	defer resp.Body.Close()
@@ -63,12 +63,15 @@ func (h *GoogleHandler) HandleGoogleCallback(e echo.Context) error {
 	username := userInfo["name"].(string)
 
 	userId, err := h.service.CreateUser(ctx, email, username, "")
+	logrus.Info("handler", userId, err)
 	if err != nil {
+		logrus.Error(err)
 		return e.String(http.StatusInternalServerError, "Ошибка при авторизации")
 	}
 
 	jwtToken, err := jwt.GenerateJWT(h.cfg, userId, "user")
 	if err != nil {
+		logrus.Error(err)
 		return e.String(http.StatusInternalServerError, "Ошибка создания токена")
 	}
 
@@ -79,7 +82,7 @@ func (h *GoogleHandler) HandleGoogleCallback(e echo.Context) error {
 		HttpOnly: true,
 		Secure:   true,
 		SameSite: http.SameSiteLaxMode,
-		Domain:   "theaesthetics.ru",
+		Domain:   h.cfg.DOMAIN,
 	})
 
 	return e.Redirect(http.StatusFound, h.cfg.FRONT_URL)

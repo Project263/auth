@@ -7,17 +7,25 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func InitLogger(logLevel string) {
-	level, err := logrus.ParseLevel(logLevel)
+func InitLogger(logLevel, mode string) {
+	_, err := logrus.ParseLevel(logLevel)
 	if err != nil {
 		logrus.Fatalf("Ошибка при парсинге уровня логирования: %v", err)
 	}
-	logrus.SetLevel(level)
+	// logrus.SetLevel(level)
 	logrus.SetReportCaller(true)
-	logrus.SetFormatter(&logrus.JSONFormatter{
-		CallerPrettyfier: func(frame *runtime.Frame) (function string, file string) {
-			return fmt.Sprintf("%s:%d", frame.Function, frame.Line), ""
-		},
-	})
-
+	if mode == "prod" {
+		logrus.SetFormatter(&logrus.JSONFormatter{
+			CallerPrettyfier: func(frame *runtime.Frame) (function string, file string) {
+				return fmt.Sprintf("%s:%d ", frame.Function, frame.Line), ""
+			},
+		})
+	} else {
+		logrus.SetFormatter(&logrus.TextFormatter{
+			FullTimestamp: true,
+			CallerPrettyfier: func(frame *runtime.Frame) (function string, file string) {
+				return fmt.Sprintf("%s:%d ", frame.Function, frame.Line), ""
+			},
+		})
+	}
 }

@@ -18,7 +18,7 @@ func main() {
 		panic(err)
 	}
 	// init logger
-	logger.InitLogger(cfg.LOG_LEVEL)
+	logger.InitLogger(cfg.LOG_LEVEL, cfg.MODE)
 	// init database
 	pool := database.ConnectDB(cfg, ctx)
 	// init echo
