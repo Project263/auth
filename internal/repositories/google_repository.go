@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"auth/internal/models"
 	"context"
 
 	"github.com/Masterminds/squirrel"
@@ -17,7 +18,7 @@ func NewGoogleRepository(db *pgxpool.Pool) *GoogleRepository {
 	return &GoogleRepository{db: db}
 }
 
-func (r *GoogleRepository) CreateUser(ctx context.Context, email, username, password string) (string, error) {
+func (r *GoogleRepository) CreateUserByGoogle(ctx context.Context, userData models.User) (string, error) {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
 		logrus.Error(err)
@@ -26,7 +27,7 @@ func (r *GoogleRepository) CreateUser(ctx context.Context, email, username, pass
 
 	query, args, err := squirrel.Select("id").
 		From("users").
-		Where(squirrel.Eq{"email": email}).
+		Where(squirrel.Eq{"email": userData.Email}).
 		PlaceholderFormat(squirrel.Dollar).
 		ToSql()
 	if err != nil {
@@ -38,8 +39,8 @@ func (r *GoogleRepository) CreateUser(ctx context.Context, email, username, pass
 	var userID string
 	if err := row.Scan(&userID); err == pgx.ErrNoRows {
 		query, args, err = squirrel.Insert("users").
-			Columns("email", "username", "password", "role").
-			Values(email, username, "", "user").
+			Columns("email", "username", "avatar", "password", "role").
+			Values(userData.Email, userData.Username, userData.Avatar, "", "user").
 			Suffix("RETURNING id").
 			PlaceholderFormat(squirrel.Dollar).
 			ToSql()

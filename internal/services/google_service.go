@@ -1,6 +1,7 @@
 package services
 
 import (
+	"auth/internal/models"
 	"auth/internal/repositories"
 	"context"
 )
@@ -13,6 +14,6 @@ func NewGoogleService(repo *repositories.GoogleRepository) *GoogleService {
 	return &GoogleService{repo: repo}
 }
 
-func (s *GoogleService) CreateUser(ctx context.Context, email, username, password string) (string, error) {
-	return s.repo.CreateUser(ctx, email, username, password)
+func (s *GoogleService) CreateUserByGoogle(ctx context.Context, userData models.User) (string, error) {
+	return s.repo.CreateUserByGoogle(ctx, userData)
 }

@@ -46,7 +46,7 @@ func (r *UserRepository) CreateUser(ctx context.Context, email, name, password s
 }
 
 func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (models.User, error) {
-	query, args, err := squirrel.Select("id", "username", "password", "email", "role").
+	query, args, err := squirrel.Select("id", "username", "avatar", "password", "email", "role").
 		From("users").
 		Where(squirrel.Eq{"email": email}).
 		PlaceholderFormat(squirrel.Dollar).
@@ -68,7 +68,7 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (mode
 }
 
 func (r *UserRepository) GetUserById(ctx context.Context, id string) (models.User, error) {
-	query, args, err := squirrel.Select("id", "username", "password", "email", "role").
+	query, args, err := squirrel.Select("id", "username", "avatar", "password", "email", "role").
 		From("users").
 		Where(squirrel.Eq{"id": id}).
 		PlaceholderFormat(squirrel.Dollar).
@@ -81,7 +81,7 @@ func (r *UserRepository) GetUserById(ctx context.Context, id string) (models.Use
 
 	row := r.db.QueryRow(ctx, query, args...)
 	var user models.User
-	if err := row.Scan(&user.Id, &user.Username, &user.Password, &user.Email, &user.Role); err != nil {
+	if err := row.Scan(&user.Id, &user.Username, &user.Avatar, &user.Password, &user.Email, &user.Role); err != nil {
 		logrus.Error(err)
 		return models.User{}, err
 	}

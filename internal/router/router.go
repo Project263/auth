@@ -17,7 +17,6 @@ func InitRouter(e *echo.Echo, db *pgxpool.Pool, cfg *config.Config) {
 	userHandler := handlers.NewUserHandler(userService, cfg)
 
 	e.Use(middleware.Logger())
-	e.POST("/login", userHandler.Login)
 	e.GET("/me", userHandler.Me)
 	e.GET("/logout", userHandler.Logout)
 

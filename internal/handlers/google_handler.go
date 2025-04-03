@@ -3,6 +3,7 @@ package handlers
 import (
 	"auth/internal/config"
 	"auth/internal/jwt"
+	"auth/internal/models"
 	"auth/internal/services"
 	"context"
 	"encoding/json"
@@ -61,8 +62,15 @@ func (h *GoogleHandler) HandleGoogleCallback(e echo.Context) error {
 
 	email := userInfo["email"].(string)
 	username := userInfo["name"].(string)
+	avatar := userInfo["picture"].(string)
 
-	userId, err := h.service.CreateUser(ctx, email, username, "")
+	userData := models.User{
+		Email:    email,
+		Username: username,
+		Avatar:   avatar,
+	}
+
+	userId, err := h.service.CreateUserByGoogle(ctx, userData)
 	logrus.Info("handler", userId, err)
 	if err != nil {
 		logrus.Error(err)
